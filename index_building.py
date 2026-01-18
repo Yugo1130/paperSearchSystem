@@ -1,3 +1,5 @@
+# PDF論文を読み込み、Ollamaの埋め込みモデルでベクトル化し、ChromaDBに格納する
+
 import os
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex
 from llama_index.vector_stores.chroma import ChromaVectorStore
@@ -16,11 +18,10 @@ DATA_DIR = "./research_papers"
 CHROMA_PATH = "./chroma_db"
 
 # OllamaをLlamaIndexの埋め込みモデルとして設定
-# NOTE: LlamaIndexのデフォルトではOpenAIが使われるため、明示的にOllamaを設定
 embed_model = OllamaEmbedding(
     model_name=EMBED_MODEL_NAME, 
     base_url=OLLAMA_BASE_URL, # OllamaのデフォルトURL
-    is_embedding_model=True           # これが埋め込みモデルであることを伝える
+    is_embedding_model=True  # 埋め込みモデルであることを明示
 )
 
 # データ読み込み
@@ -58,7 +59,7 @@ storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
 # インデックスの作成と格納
 print("インデックスを作成し、ChromaDBに格納中...")
-# VectorStoreIndex.from_documentsが以下の処理を全て自動で実行します
+# VectorStoreIndex.from_documentsが以下の処理を全て自動で実行
 # a. チャンク化
 # b. mxbai-embed-large (Ollama)でベクトル化
 # c. ChromaDBへ保存
